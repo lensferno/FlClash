@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -7,7 +8,9 @@ import 'package:fl_clash/manager/hotkey_manager.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -98,6 +101,17 @@ class ApplicationState extends State<Application> {
     globalState.appController = AppController(context);
     globalState.measure = Measure.of(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+
+      if (Platform.isAndroid) {
+        try {
+          await FlutterDisplayMode.setHighRefreshRate();
+        } catch (e) {
+          if (kDebugMode) {
+            print(e);
+          }
+        }
+      }
+
       final currentContext = globalState.navigatorKey.currentContext;
       if (currentContext != null) {
         globalState.appController = AppController(currentContext);
